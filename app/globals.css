@@ -4,35 +4,22 @@
 @custom-variant short (@media (max-height: 560px));
 
 /*
-  Palette: cold luxury. Silver-grey base, off-black ink, one carbon-red accent.
-  Shape system: media panels and surfaces 28px, buttons and inputs full pill.
+  Palette: one dark theme on every screen. The page background matches the near-black edge of the
+  rendered frames, so animations fade straight into the page. One carbon-red accent.
+  Shape system: the opening animation has feathered edges; other animation panels and surfaces 28px; buttons and inputs full pill.
 */
 :root {
-  --bg: #eceef0;
-  --surface: #f6f7f8;
-  --ink: #101114;
-  --muted: #62666d;
-  --line: rgb(16 17 20 / 0.1);
-  --accent: #b5382a;
-  --accent-ink: #f6f7f8;
+  color-scheme: dark;
+  --bg: #070606;
+  --surface: #121113;
+  --ink: #eceae8;
+  --muted: #8f8b88;
+  --line: rgb(236 234 232 / 0.1);
+  --accent: #d0503d;
+  --accent-ink: #070606;
   --panel: #070606;
-  --panel-ink: #e9e7e5;
+  --panel-ink: #eceae8;
   --panel-muted: #9b9794;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c0d0f;
-    --surface: #15171a;
-    --ink: #e8eaed;
-    --muted: #9ba0a8;
-    --line: rgb(232 234 237 / 0.1);
-    --accent: #d0503d;
-    --accent-ink: #0c0d0f;
-    --panel: #070606;
-    --panel-ink: #e9e7e5;
-    --panel-muted: #9b9794;
-  }
 }
 
 @theme inline {
@@ -52,6 +39,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: transparent;
   background: var(--bg);
   color: var(--ink);
 }
@@ -78,6 +66,63 @@ body {
   .panel-start {
     transform: scale(0.82);
   }
+}
+
+/*
+  Feathered edges for animations: the frame fades into the page on all four sides instead of ending
+  in a hard border, so the object reads as floating in the page. Eased stops avoid visible banding.
+*/
+.feather {
+  --feather-x: 14%;
+  --feather-y: 12%;
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(0 0 0 / 0.25) calc(var(--feather-x) * 0.3),
+      rgb(0 0 0 / 0.7) calc(var(--feather-x) * 0.65),
+      #000 var(--feather-x),
+      #000 calc(100% - var(--feather-x)),
+      rgb(0 0 0 / 0.7) calc(100% - var(--feather-x) * 0.65),
+      rgb(0 0 0 / 0.25) calc(100% - var(--feather-x) * 0.3),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.25) calc(var(--feather-y) * 0.3),
+      rgb(0 0 0 / 0.7) calc(var(--feather-y) * 0.65),
+      #000 var(--feather-y),
+      #000 calc(100% - var(--feather-y)),
+      rgb(0 0 0 / 0.7) calc(100% - var(--feather-y) * 0.65),
+      rgb(0 0 0 / 0.25) calc(100% - var(--feather-y) * 0.3),
+      transparent 100%
+    );
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(0 0 0 / 0.25) calc(var(--feather-x) * 0.3),
+      rgb(0 0 0 / 0.7) calc(var(--feather-x) * 0.65),
+      #000 var(--feather-x),
+      #000 calc(100% - var(--feather-x)),
+      rgb(0 0 0 / 0.7) calc(100% - var(--feather-x) * 0.65),
+      rgb(0 0 0 / 0.25) calc(100% - var(--feather-x) * 0.3),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.25) calc(var(--feather-y) * 0.3),
+      rgb(0 0 0 / 0.7) calc(var(--feather-y) * 0.65),
+      #000 var(--feather-y),
+      #000 calc(100% - var(--feather-y)),
+      rgb(0 0 0 / 0.7) calc(100% - var(--feather-y) * 0.65),
+      rgb(0 0 0 / 0.25) calc(100% - var(--feather-y) * 0.3),
+      transparent 100%
+    );
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
 /* Skeleton shimmer for frame sequences while the first frame decodes. */

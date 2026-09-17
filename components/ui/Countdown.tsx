@@ -34,10 +34,10 @@ export function Countdown({ until }: { until: string }) {
   ];
 
   return (
-    <div className="flex items-end gap-5 font-mono tabular-nums" aria-live="off">
+    <div className="flex items-end gap-3 font-mono min-[400px]:gap-4 md:gap-5 tabular-nums" aria-live="off">
       {units.map((u) => (
         <div key={u.label} className="flex flex-col gap-1">
-          <span className="text-2xl leading-none md:text-[1.75rem] short:text-xl">{u.value === undefined ? "--" : pad(u.value)}</span>
+          <span className="text-xl leading-none min-[400px]:text-2xl md:text-[1.75rem] short:text-xl">{u.value === undefined ? "--" : pad(u.value)}</span>
           <span className="text-[0.7rem] text-panel-muted">{u.label}</span>
         </div>
       ))}

@@ -9,6 +9,10 @@ type Options = {
   fit?: FitMode;
   /** Edge color of the frames; contained frames are feathered into it. */
   matte?: string;
+  /** On narrow canvases (phones): multiply the fitted scale by this factor. */
+  mobileZoom?: number;
+  /** On narrow canvases (phones): vertical position of the frame center, 0 = top, 1 = bottom. */
+  mobileCenterY?: number;
 };
 
 function isLoaded(img: HTMLImageElement | undefined): img is HTMLImageElement {
@@ -20,7 +24,10 @@ function isLoaded(img: HTMLImageElement | undefined): img is HTMLImageElement {
  * `render` is stable and never touches React state, so it is safe to call from
  * GSAP ticks or requestAnimationFrame loops.
  */
-export function useFrameSequence(key: SequenceKey, { fit = "cover", matte }: Options = {}) {
+export function useFrameSequence(
+  key: SequenceKey,
+  { fit = "cover", matte, mobileZoom = 1, mobileCenterY = 0.5 }: Options = {},
+) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentRef = useRef(0);
@@ -47,14 +54,16 @@ export function useFrameSequence(key: SequenceKey, { fit = "cover", matte }: Opt
 
       const cw = canvas.width;
       const ch = canvas.height;
-      const scale =
+      const narrow = canvas.clientWidth < 640;
+      const fitted =
         fit === "cover"
           ? Math.max(cw / img.naturalWidth, ch / img.naturalHeight)
           : Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
+      const scale = fitted * (narrow ? mobileZoom : 1);
       const w = img.naturalWidth * scale;
       const h = img.naturalHeight * scale;
       const x = (cw - w) / 2;
-      const y = (ch - h) / 2;
+      const y = narrow ? ch * mobileCenterY - h / 2 : (ch - h) / 2;
 
       // Outside the image the canvas stays transparent, so layers behind it show through.
       ctx.clearRect(0, 0, cw, ch);
@@ -78,7 +87,7 @@ export function useFrameSequence(key: SequenceKey, { fit = "cover", matte }: Opt
         }
       }
     },
-    [count, fit, matte],
+    [count, fit, matte, mobileZoom, mobileCenterY],
   );
 
   useEffect(() => {

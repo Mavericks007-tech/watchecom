@@ -15,6 +15,7 @@ const parts = [
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
   const partRefs = useRef<(HTMLLIElement | null)[]>([]);
   const { canvasRef, render, ready, count } = useFrameSequence("hero");
 
@@ -51,8 +52,9 @@ export function Hero() {
             frame: count - 1,
             ease: "none",
             onUpdate: () => render(state.frame),
-            // Short screens (phones in landscape) cannot fit the pinned layout, so the
-            // frames play while the section scrolls past instead of holding the page.
+            // Short screens (phones in landscape): no room to pin, frames play while the section scrolls past.
+            // Desktop: the whole section holds. Phones: the copy scrolls by first, then only the large
+            // panel holds centered on screen while the frames play.
             scrollTrigger: short
               ? {
                   trigger: sectionRef.current,
@@ -62,15 +64,26 @@ export function Hero() {
                   invalidateOnRefresh: true,
                   onUpdate: (self) => setPart(self.progress),
                 }
-              : {
-                  trigger: sectionRef.current,
-                  start: "top top",
-                  end: desktop ? "+=170%" : "+=120%",
-                  pin: true,
-                  scrub: 0.5,
-                  invalidateOnRefresh: true,
-                  onUpdate: (self) => setPart(self.progress),
-                },
+              : desktop
+                ? {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "+=170%",
+                    pin: true,
+                    scrub: 0.5,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => setPart(self.progress),
+                  }
+                : {
+                    trigger: mediaRef.current,
+                    // Centered in the space below the nav.
+                    start: "center center+=32",
+                    end: "+=140%",
+                    pin: true,
+                    scrub: 0.5,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => setPart(self.progress),
+                  },
           });
         },
       );
@@ -80,16 +93,16 @@ export function Hero() {
 
   return (
     <section ref={sectionRef} id="drop" className="relative bg-bg">
-      <div className="mx-auto grid min-h-[100svh] max-w-[1400px] grid-cols-1 content-center gap-6 px-4 pb-6 pt-20 md:grid-cols-12 md:items-center md:gap-10 md:px-10 md:pb-10 md:pt-24 short:py-20">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 content-center gap-10 px-4 pb-16 pt-4 md:min-h-[100svh] md:grid-cols-12 md:items-center md:gap-10 md:px-10 md:pb-10 md:pt-24 short:py-20">
         <div className="md:col-span-6">
           <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">
             Drop {drop.number}, {drop.month}
           </p>
-          <h2 className="mt-4 text-[2.125rem] leading-[1.04] tracking-[-0.03em] min-[400px]:text-[2.5rem] md:mt-5 md:text-5xl xl:text-[4rem] short:text-4xl">
+          <h2 className="mt-4 text-[2.5rem] leading-[1.04] tracking-[-0.03em] md:mt-5 md:text-5xl xl:text-[4rem] short:text-4xl">
             One watch a month.
             <span className="block text-muted">This one is carbon.</span>
           </h2>
-          <p className="mt-4 max-w-[40ch] text-[0.95rem] leading-relaxed text-muted min-[400px]:text-base md:mt-6 md:text-lg">
+          <p className="mt-4 max-w-[40ch] text-base leading-relaxed text-muted md:mt-6 md:text-lg">
             A forged carbon chronograph, made in a single run of {drop.pieces} pieces. When September ends, so
             does the run.
           </p>
@@ -101,8 +114,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-4 md:col-span-6 md:items-end">
-          <div className="relative isolate aspect-[4/5] w-[min(100%,calc(38svh*0.8))] overflow-hidden rounded-[28px] md:w-[min(100%,calc(72svh*0.8))]">
+        <div ref={mediaRef} className="flex flex-col items-center gap-4 md:col-span-6 md:items-end">
+          <div className="relative isolate aspect-[4/5] w-[min(100%,calc((100svh-8.5rem)*0.8))] overflow-hidden rounded-[28px] md:w-[min(100%,calc(72svh*0.8))]">
             <canvas
               ref={canvasRef}
               role="img"

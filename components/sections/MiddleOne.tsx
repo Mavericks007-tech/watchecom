@@ -19,7 +19,7 @@ export function MiddleOne() {
               fps={14}
               scrollZoom={[1, 1.3]}
               label="Exploded view of the watch movement: gears, bridges, hands and the carbon case middle"
-              className="aspect-[720/520] w-full"
+              className="aspect-square w-full md:aspect-[720/520]"
             />
           </Reveal>
           <Reveal delay={0.12} className="md:col-span-4 md:col-start-1">

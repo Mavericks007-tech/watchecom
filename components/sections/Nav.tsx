@@ -18,10 +18,10 @@ export function Nav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-40">
-      <div className="mx-auto mt-3 flex h-14 max-w-[1400px] items-center justify-between px-4 md:mt-4 md:px-10">
+      <div className="mx-auto mt-3 flex h-12 max-w-[1400px] md:h-14 items-center justify-between px-4 md:mt-4 md:px-10">
         <nav
           aria-label="Primary"
-          className="flex h-14 w-full items-center justify-between rounded-full bg-surface/70 pl-6 pr-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_10px_30px_-18px_rgb(16_17_20/0.25)] ring-1 ring-inset ring-line backdrop-blur-xl"
+          className="flex h-12 w-full items-center justify-between rounded-full bg-surface/70 pl-5 pr-1 md:h-14 md:pl-6 md:pr-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.06),0_12px_32px_-16px_rgb(0_0_0/0.8)] ring-1 ring-inset ring-line backdrop-blur-xl"
         >
           <a href="#watch" className="text-[0.95rem] font-medium uppercase tracking-[0.34em]" aria-label="XIIAS home">
             XIIAS
