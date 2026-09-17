@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Phones in landscape and other short viewports. */
+@custom-variant short (@media (max-height: 560px));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+  Palette: cold luxury. Silver-grey base, off-black ink, one carbon-red accent.
+  Shape system: media panels and surfaces 28px, buttons and inputs full pill.
+*/
+:root {
+  --bg: #eceef0;
+  --surface: #f6f7f8;
+  --ink: #101114;
+  --muted: #62666d;
+  --line: rgb(16 17 20 / 0.1);
+  --accent: #b5382a;
+  --accent-ink: #f6f7f8;
+  --panel: #070606;
+  --panel-ink: #e9e7e5;
+  --panel-muted: #9b9794;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #0c0d0f;
+    --surface: #15171a;
+    --ink: #e8eaed;
+    --muted: #9ba0a8;
+    --line: rgb(232 234 237 / 0.1);
+    --accent: #d0503d;
+    --accent-ink: #0c0d0f;
+    --panel: #070606;
+    --panel-ink: #e9e7e5;
+    --panel-muted: #9b9794;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-panel: var(--panel);
+  --color-panel-ink: var(--panel-ink);
+  --color-panel-muted: var(--panel-muted);
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Opening section starts in its pre-scroll state before hydration; GSAP takes over from there. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .panel-start {
+    transform: scale(0.82);
+  }
+}
+
+/* Skeleton shimmer for frame sequences while the first frame decodes. */
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+  animation: shimmer 1.6s var(--ease-out-expo) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    animation: none;
+  }
 }
